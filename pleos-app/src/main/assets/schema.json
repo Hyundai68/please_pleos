@@ -1,0 +1,57 @@
+{
+  "packageName": "com.pleose.car",
+  "appDescription": "Delivers errand requests sent by family members to the driver and adds a stop for each accepted errand to the Pleos navigation route.",
+  "version": "0.2.0",
+  "actionCalls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "ANSWER_ERRAND_REQUEST",
+        "description": "Answers the family errand request that the app is currently asking the driver about. Accepting adds a stop to the Pleos navigation route. Accepting on condition sends the estimated arrival time to the family member, who confirms or cancels it.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string",
+              "description": "The driver's answer to the current errand request. Use conditional when the driver asks whether arriving later than requested is fine.",
+              "enum": ["accept", "conditional", "later", "decline"]
+            }
+          },
+          "required": ["answer"]
+        },
+        "component": "service"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "CONFIRM_ERRAND_DONE",
+        "description": "Confirms whether the driver finished the family errand at the stop the car just left, and shares the result with the family member.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "done": {
+              "type": "boolean",
+              "description": "True if the errand was finished, false if it could not be done."
+            }
+          },
+          "required": ["done"]
+        },
+        "component": "service"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "READ_FAMILY_ERRANDS",
+        "description": "Reads the family errand requests that are still open for the current drive, with their status.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "component": "service"
+      }
+    }
+  ]
+}

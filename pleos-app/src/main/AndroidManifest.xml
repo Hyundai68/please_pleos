@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  권한은 사용하는 SDK API에 필요한 것만 선언한다 (Pleos 앱마켓 승인 범위).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Android Automotive OS (Pleos Connect) 전용 앱 -->
+    <uses-feature
+        android:name="android.hardware.type.automotive"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <!-- AAOS 차량 프로퍼티: 기어(GEAR_SELECTION), 차속(PERF_VEHICLE_SPEED) -->
+    <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <!-- Pleos Vehicle SDK: 도어 열림·닫힘 (데려와줘 탑승 감지) -->
+    <uses-permission android:name="pleos.car.permission.CAR_DOORS" />
+    <!-- Pleos NaviHelper SDK: 경로·경유지·도착 이벤트, 경로 요청, 내비 화면 요청(Pleos 지도 장소 검색) -->
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE_SEARCH" />
+    <uses-permission android:name="pleos.car.permission.NAVI_CUSTOM_MAP" />
+    <!-- Pleos TextToSpeech / SpeechToText SDK -->
+    <uses-permission android:name="pleos.car.permission.TTS_SERVICE" />
+    <uses-permission android:name="pleos.car.permission.STT_SERVICE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 가족 중계 서버 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Please 버튼: Pleos 내비 위에 표시. NaviHelper SDK에 내비 화면에 UI를 넣는 공개 API가 없어 필요하다 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- 차량이 켜지면 Please 버튼을 다시 띄운다 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Pleos 내비가 화면에 떠 있을 때만 Please 버튼을 보여 주기 위해 (없으면 항상 표시) -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <queries>
+        <!-- Pleos 내비 앞으로 가져오기 -->
+        <package android:name="ai.umos.maps.android.navigation.app" />
+        <!-- 이 차량의 설정 앱에 '다른 앱 위에 표시' 화면이 있는지 확인 -->
+        <intent>
+            <action android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".PleoseApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:theme="@style/Theme.Pleose">
+
+        <!-- 처음 설정·가족 연결 화면. 준비가 끝나 있으면 바로 Pleos 내비로 넘어간다 -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Pleos 내비 위 Please 버튼·패널과 음성 진행 -->
+        <service
+            android:name=".overlay.PleaseOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Shows the 오는 길에 부탁해 button over Pleos navigation and handles family errand voice prompts while driving." />
+        </service>
+
+        <receiver
+            android:name=".overlay.PleaseBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Gleo Interface: assets/schema.json의 함수 (component = service → sendBroadcast) -->
+        <receiver
+            android:name=".gleo.GleoActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ANSWER_ERRAND_REQUEST" />
+                <action android:name="CONFIRM_ERRAND_DONE" />
+                <action android:name="READ_FAMILY_ERRANDS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PoC: 같은 PC·LAN의 중계 서버(HTTP)에 접속한다. 운영 환경에서는 HTTPS 서버만 허용할 것 -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
