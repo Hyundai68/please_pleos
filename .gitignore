@@ -18,3 +18,6 @@ build
 # release 서명 키 (커밋하지 않음)
 /keystore/
 /keystore.properties
+
+# 시연 영상 원본 (100MB 초과, 압축본은 video/에 있음)
+/H68_오늘길에부탁해_시연영상.webm
