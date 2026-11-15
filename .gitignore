@@ -14,3 +14,7 @@ build
 /captures
 .externalNativeBuild
 .cxx
+
+# release 서명 키 (커밋하지 않음)
+/keystore/
+/keystore.properties

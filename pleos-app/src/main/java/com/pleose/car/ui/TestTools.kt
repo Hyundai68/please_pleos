@@ -26,7 +26,7 @@ import com.pleose.shared.text.formatMinutes
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * 테스트 조작 (디버그 빌드에서만, 패널 목록 머리의 '…').
+ * 테스트 조작 (심사·시연용으로 release에도 표시, 패널 목록 머리의 '…').
  * 에뮬레이터는 실제로 달리지 않으므로 주행 상태·경유지 도착/출발·문 열림을 대신 만든다.
  * 경로와 경유지는 언제나 Pleos 내비의 것을 쓴다.
  */

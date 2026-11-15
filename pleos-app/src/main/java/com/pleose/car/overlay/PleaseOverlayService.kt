@@ -8,7 +8,6 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
 import android.os.Build
@@ -163,10 +162,11 @@ class PleaseOverlayService : Service() {
         val page by runtime.panel.collectAsState()
         val state by runtime.state.collectAsState()
         val ui = u ?: return
-        val debuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        // 심사·시연용으로 release에서도 '…' 테스트 도구(부탁 보내기, 주행·도착 시뮬레이션)를 보여 준다
+        val showTestTools = true
         PleosTheme {
             QuestPanel(
-                ui, page, state.canListen, debuggable, androidx.compose.ui.unit.Dp(maxHeightDp), panelActions,
+                ui, page, state.canListen, showTestTools, androidx.compose.ui.unit.Dp(maxHeightDp), panelActions,
             ) { TestTools(runtime, state, ui) }
         }
     }
